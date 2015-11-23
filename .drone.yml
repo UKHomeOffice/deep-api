@@ -1,0 +1,36 @@
+debug: true
+
+notify:
+  webhook:
+    image: ipedrazas/drone-webhook
+    urls:
+      - http://deep-api.ipedrazas.k8s.co.uk:5000/webhooks
+      - http://deep-api.ipedrazas.k8s.co.uk:5000/debug
+
+publish:
+  docker:
+    environment:
+      - DOCKER_LAUNCH_DEBUG=true
+    username: $$QUAY_USER
+    password: $$QUAY_PASSWORD
+    email: $$QUAY_EMAIL
+    repo: quay.io/ukhomeofficedigital/deep-api
+    tag:
+      - latest
+      - "$$BUILD_NUMBER"
+    when:
+      branch: master
+
+    branch: master
+
+deploy:
+  kubernetes:
+    image: ipedrazas/drone-kubernetes
+    replicationcontrollers:
+      - kubernetes/deep-api-rc.json
+    services: []
+    token: $$TOKEN
+    apiserver: $$APISERVER
+    namespace: default
+    webhook: http://deep-api.ipedrazas.k8s.co.uk:5000/deploys
+    webhook_token: 12345abcdf

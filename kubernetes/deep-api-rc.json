@@ -1,0 +1,45 @@
+{
+  "apiVersion": "v1",
+  "kind": "ReplicationController",
+  "metadata": {
+    "name": "deep-api",
+    "labels": {
+      "name": "deep-api",
+      "deep": "api"
+    }
+  },
+  "spec": {
+    "replicas": 1,
+    "template": {
+      "metadata": {
+        "name": "deep-api",
+        "labels": {
+          "name": "deep-api",
+          "deep": "api"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "deep-api",
+            "image": "quay.io/ukhomeofficedigital/deep-api:latest",
+            "ports":[
+                     {
+                        "containerPort": 5000,
+                        "protocol":"TCP"
+                     }
+                  ],
+            "livenessProbe":{
+                "httpGet": {
+                    "path": "/_status/healthcheck",
+                    "port": 5000
+                },
+                "initialDelaySeconds": 30,
+                "timeoutSeconds": 5
+            }
+          }
+        ]
+      }
+    }
+  }
+}
